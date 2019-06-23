@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.couchbase.core.CouchbaseTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -14,18 +13,14 @@ import org.springframework.stereotype.Service;
 import com.couchbase.client.core.CouchbaseException;
 import com.couchbase.client.java.error.DocumentDoesNotExistException;
 import com.kvstore.server.models.ResourceDTO;
+import com.kvstore.server.models.StorageFlag;
 
 @Service
 @Qualifier("ResourceDTORespositoryService")
-@ComponentScan(basePackageClasses=ResourceDTORepository.class)
 @Component
 public class ResourceDTORespositoryService implements ResourceDTOService {
 	
-	/*@Autowired
-	private ResourceDTORepository repo;
 	
-	
-*/
 	Logger logger = LoggerFactory.getLogger(ResourceDTORespositoryService.class);
 	
 	@Autowired
@@ -34,50 +29,67 @@ public class ResourceDTORespositoryService implements ResourceDTOService {
 	@Autowired
     private CouchbaseTemplate template;
 	
+	@Autowired
+	private StorageFlag flag;
+	
+	
+	/**
+	 * This method return the ResourceDTO after querying the database with the document
+	 * key and throws exception if key does not exist.
+	 */
 	@Override
 	public ResourceDTO findOne(String id) {
 		if(!template.exists(id)) {
-			//document with this id does not exist
+			
 			throw new DocumentDoesNotExistException("Document does not exist with respect to requested id = "+ id);
 		}
         return template.findById(id, ResourceDTO.class);
 	}
 
+	
+	/**
+	 * This method creates or updates the document in the database depending on the 
+	 * condition , if the key already exist then it is updated otherwise a new 
+	 * document is created in the database.
+	 * 
+	 */
 	@Override
 	public void create(ResourceDTO resourceDTO) {
-		//resourceDTO.setCreated(null);
-		//resourceDTO.setUpdated(null);
+		
 		try {
+			
 		if(template.exists(resourceDTO.getId())) {
-			//means document already exist with the same id
-			//we need to update its value
-			/*
-			 * At this time we need to publish our message to Kafka that
-			 * we are about to update the value of this id document
-			 */
+			
+			logger.info("Document with id :"+resourceDTO.getId()+" already exist, Updating the document values");
+			
+			ResourceDTO resourceToBeUpdated = template.findById(resourceDTO.getId(), ResourceDTO.class);
+			flag.setIsUpdated(Boolean.TRUE);
+			flag.setIsCreated(Boolean.FALSE);
 			resourceDTO.setUpdated(LocalDateTime.now());
-			kvStoreApplicationService.publishEvent(resourceDTO);
-			logger.info("document already existed but we are updating the value");
+			kvStoreApplicationService.publishEvent(resourceDTO,flag);
 			
 			template.save(resourceDTO);
 			
+			logger.info("value of id: "+resourceDTO.getId()+" has been changed from "+resourceToBeUpdated.getValue()
+			+" to "+resourceDTO.getValue());
 			
 		}else {
+			
+			logger.info("Document with id :"+ resourceDTO.getId()+" does not exist, creating a new document");
+
+			flag.setIsCreated(Boolean.TRUE);
+			flag.setIsUpdated(Boolean.FALSE);
 			resourceDTO.setUpdated(LocalDateTime.now());
+			kvStoreApplicationService.publishEvent(resourceDTO,flag);
+
 			template.insert(resourceDTO);
 		}
 		}
 		catch(CouchbaseException ex) {
-			logger.info("Exception occured while accessing Databse");
+			logger.info("Exception occured while accessing Database");
 			throw new CouchbaseException(ex.getMessage(), ex.getCause());
 		}
 		
-	}
-
-	@Override
-	public void update(ResourceDTO resourceDTO) {
-		//resourceDTO.setUpdated(OffsetDateTime.now());
-		template.insert(resourceDTO);
 	}
 
 }

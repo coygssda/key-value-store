@@ -24,24 +24,33 @@ public class RestControl {
 	
 	org.slf4j.Logger logger = LoggerFactory.getLogger(RestControl.class);
 	
+	/**
+	 * Returns the value of the id which is coming as a path parameter in
+	 * request and throws Exception if id is not found.
+	 * @param id the id of the document which is store in database
+	 * @return value of the id
+	 * @throws Exception
+	 */
 	@RequestMapping(value="/getValueFromId/{id}" , method=RequestMethod.GET)
 	public ResponseEntity<String> get(@PathVariable("id") String id) throws Exception{
-		//Resource resource=new Resource();
-		//resource.setId("id");
-		//resource.setValue("237");
-		logger.info("inside rest controller class");
-		
+	
+		logger.info("Inside RestControl class : method = get : id = "+id);
 		Resource resource = kvHandleDelegate.kvHandleGenericForQuery(id);
 		
 		return new ResponseEntity<String>(resource.getValue(),HttpStatus.OK);
 	}
 	
-	
+	/**
+	 * Returns 200 OK as response along with the requested body and updates
+	 * the document in the database
+	 * @param resource request coming from client 
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value="/updateStorage" , method=RequestMethod.PUT)
 	public ResponseEntity<Resource> update(@RequestBody Resource resource) throws Exception{
-		System.out.println(resource);
-		logger.info("inside rest controller class");
-		//now i have to delegate this call to my delegate 
+
+		logger.info("Inside RestControl class : method= update : "+resource.toString());
 		kvHandleDelegate.kvHandleGenericForUpdate(resource);
 		
 		return new ResponseEntity<Resource>(resource,HttpStatus.OK);

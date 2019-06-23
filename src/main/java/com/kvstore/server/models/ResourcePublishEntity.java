@@ -8,7 +8,28 @@ public class ResourcePublishEntity {
 	
 	private String value;
 	
-	private LocalDateTime aboutTobeUpdated;
+	private LocalDateTime timeToBeUpdated;
+	
+	private Boolean toBeCreated;
+	
+	private Boolean toBeUpdated;
+	
+
+	public Boolean getToBeCreated() {
+		return toBeCreated;
+	}
+
+	public void setToBeCreated(Boolean toBeCreated) {
+		this.toBeCreated = toBeCreated;
+	}
+
+	public Boolean getToBeUpdated() {
+		return toBeUpdated;
+	}
+
+	public void setToBeUpdated(Boolean toBeUpdated) {
+		this.toBeUpdated = toBeUpdated;
+	}
 
 	public String getId() {
 		return id;
@@ -26,12 +47,12 @@ public class ResourcePublishEntity {
 		this.value = value;
 	}
 
-	public LocalDateTime getAboutTobeUpdated() {
-		return aboutTobeUpdated;
+	public LocalDateTime gettimeToBeUpdated() {
+		return timeToBeUpdated;
 	}
 
-	public void setAboutTobeUpdated(LocalDateTime aboutTobeUpdated) {
-		this.aboutTobeUpdated = aboutTobeUpdated;
+	public void settimeToBeUpdated(LocalDateTime timeToBeUpdated) {
+		this.timeToBeUpdated = timeToBeUpdated;
 	}
 	
 	

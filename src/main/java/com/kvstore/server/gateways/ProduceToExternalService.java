@@ -18,9 +18,15 @@ public class ProduceToExternalService {
 	@Autowired
 	private KafkaTemplate<String, ResourcePublishEntity> kafkaTemplate;
 	
+	
+	/**
+	 * This method publishes ResourcePublishEntity object as Json in the 
+	 * Kafka Topic kvStoreEvent .
+	 * @param resourcePublishEntity
+	 */
 	public void publish(ResourcePublishEntity resourcePublishEntity) {
+		logger.info("Inside ProduceToExternalService class :"+resourcePublishEntity.toString() );
 		kafkaTemplate.send(TOPIC, resourcePublishEntity);
-		logger.info("published the event");
 	}
 	
 

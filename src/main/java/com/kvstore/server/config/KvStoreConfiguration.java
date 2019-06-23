@@ -2,11 +2,12 @@ package com.kvstore.server.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 
-import com.kvstore.server.gateways.ProduceToExternalService;
 import com.kvstore.server.mapper.MapResourceDTOToResource;
 import com.kvstore.server.mapper.MapResourceDTOToResourcePublishEntity;
 import com.kvstore.server.mapper.MapResourceToResourceDTO;
+import com.kvstore.server.models.StorageFlag;
 import com.kvstore.server.resouces.KvHandleDelegate;
 import com.kvstore.server.services.implementation.KvStoreApplicationService;
 
@@ -44,4 +45,10 @@ public class KvStoreConfiguration {
 		return new ProduceToExternalService();
 	}
 */
+	
+	@Bean
+	@Scope("prototype")
+	public StorageFlag storageFlag() {
+		return new StorageFlag();
+	}
 }

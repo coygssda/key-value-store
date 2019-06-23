@@ -10,7 +10,7 @@ public class MapResourceDTOToResourcePublishEntity {
 		
 		resourcePublishEntity.setId(resourceDTO.getId());
 		resourcePublishEntity.setValue(resourceDTO.getValue());
-		resourcePublishEntity.setAboutTobeUpdated(resourceDTO.getUpdated());
+		resourcePublishEntity.settimeToBeUpdated(resourceDTO.getUpdated());
 		
 		return resourcePublishEntity;
 	}
