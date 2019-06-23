@@ -66,27 +66,33 @@ public class ResourceDTORespositoryService implements ResourceDTOService {
 			flag.setIsUpdated(Boolean.TRUE);
 			flag.setIsCreated(Boolean.FALSE);
 			resourceDTO.setUpdated(LocalDateTime.now());
-			kvStoreApplicationService.publishEvent(resourceDTO,flag);
+			
+			if(!resourceToBeUpdated.getValue().equals(resourceDTO.getValue())) {
+				logger.info("value of id: "+resourceDTO.getId()+" has been changed from "+resourceToBeUpdated.getValue()
+				+" to "+resourceDTO.getValue());
+				}
+			else {
+					logger.info("Request recieved to update the already existing value for the existing document");
+				}
 			
 			template.save(resourceDTO);
 			
-			logger.info("value of id: "+resourceDTO.getId()+" has been changed from "+resourceToBeUpdated.getValue()
-			+" to "+resourceDTO.getValue());
 			
 		}else {
 			
-			logger.info("Document with id :"+ resourceDTO.getId()+" does not exist, creating a new document");
+			logger.info("Document with id :"+ resourceDTO.getId()+ " does not exist,thus creating a new document");
 
 			flag.setIsCreated(Boolean.TRUE);
 			flag.setIsUpdated(Boolean.FALSE);
 			resourceDTO.setUpdated(LocalDateTime.now());
-			kvStoreApplicationService.publishEvent(resourceDTO,flag);
 
 			template.insert(resourceDTO);
 		}
 		}
 		catch(CouchbaseException ex) {
 			logger.info("Exception occured while accessing Database");
+			kvStoreApplicationService.publishEvent(resourceDTO,flag);
+
 			throw new CouchbaseException(ex.getMessage(), ex.getCause());
 		}
 		
