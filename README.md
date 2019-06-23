@@ -27,3 +27,17 @@ RestControl - This is the class which is the first point of entry to our server 
 KvStoreApplicationService- This is the class which acts a service(domain) layer and redirects the calls to either the repository service or the gateway service.
 ResourceDTORepositoryService-This is the actual class which is responsible for saving and inserting and querying the document from the couchbase.
 ProductToExternalService- This class is responsible for publishing message in the form of Json to a topic "kvStoreEvent" and it also publishes the time at which the document was about to be updated.
+
+Integration with Couchbase and Kafka
+-----------------------------------
+Couchbase-
+Create a bucket "kvstore"(same as in application.properties) and primary index on the bucket in Couchbase .
+ADD USER in couchbase through the UI.
+Kafka-
+cd bin/
+./zookeeper-server-start.sh ..config/zookeeper.properties
+./kafka-server-start.sh ..config/server.properties
+./kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic kvStoreEvent
+./kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic kvStoreEvent --from-beginning
+
+
