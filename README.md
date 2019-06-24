@@ -35,10 +35,16 @@ Create a bucket "kvstore"(same as in application.properties) and primary index o
 ADD USER in couchbase through the UI.
 
 Kafka-
+
 cd bin/
+
 ./zookeeper-server-start.sh ..config/zookeeper.properties
+
 ./kafka-server-start.sh ..config/server.properties
+
 ./kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic kvStoreEvent
+
 ./kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic kvStoreEvent --from-beginning
+
 
 
