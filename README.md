@@ -9,6 +9,7 @@ maven build(skip Tests) and run the spring boot Application (with main class "co
 Client Requests
 ---------------
 Get value by Id   =      curl -X GET   http://localhost:8080/kvStore/getValueFromId/id01
+
 Put Id and value  =     curl -X PUT \
   http://localhost:8080/kvStore/updateStorage \
   -H 'Content-Type: application/json' \
@@ -20,8 +21,11 @@ Put Id and value  =     curl -X PUT \
 Flow Design
 -----------
 RestControl - This is the class which is the first point of entry to our server when a request is made by the client to get value and update or create a document in the database . It implements the MVC .
+
 KvStoreApplicationService- This is the class which acts a service(domain) layer and redirects the calls to either the repository service or the gateway service.
+
 ResourceDTORepositoryService-This is the actual class which is responsible for saving and inserting and querying the document from the couchbase.
+
 ProductToExternalService- This class is responsible for publishing message in the form of Json to a topic "kvStoreEvent" and it also publishes the time at which the document was about to be updated.
 
 Integration with Couchbase and Kafka
