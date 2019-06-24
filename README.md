@@ -33,6 +33,7 @@ Integration with Couchbase and Kafka
 Couchbase-
 Create a bucket "kvstore"(same as in application.properties) and primary index on the bucket in Couchbase .
 ADD USER in couchbase through the UI.
+
 Kafka-
 cd bin/
 ./zookeeper-server-start.sh ..config/zookeeper.properties
